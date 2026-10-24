@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#171717">
+  <meta name="description" content="Discover live events, concerts, theatre and unforgettable experiences with OpenTickets.">
+  <title>OpenTickets — Find Your Next Experience</title>
+
+  <!-- Bootstrap 5 is the only external framework used. -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ot-ink: #171717;
+      --ot-ink-soft: #252525;
+      --ot-paper: #f7f5f0;
+      --ot-white: #fff;
+      --ot-muted: #77766f;
+      --ot-line: #e5e1d8;
+      --ot-accent: #d8a94e;
+      --ot-accent-dark: #b9872d;
+      --ot-radius: 18px;
+      --ot-shadow: 0 16px 40px rgba(23, 23, 23, .08);
+      --ot-font-body: "DM Sans", Arial, sans-serif;
+      --ot-font-display: "Playfair Display", Georgia, serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+    body { margin: 0; background: var(--ot-paper); color: var(--ot-ink); font-family: var(--ot-font-body); }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    .site-header {
+      position: sticky; top: 0; z-index: 1000; background: rgba(23,23,23,.97);
+      color: white; transition: box-shadow .25s ease, padding .25s ease;
+      backdrop-filter: blur(12px);
+    }
+    .site-header.is-scrolled { box-shadow: 0 8px 24px rgba(0,0,0,.18); }
+    .navbar { min-height: 82px; transition: min-height .25s ease; }
+    .site-header.is-scrolled .navbar { min-height: 66px; }
+    .brand-mark {
+      display: inline-flex; align-items: center; gap: 10px; color: white;
+      font-weight: 700; letter-spacing: -.045em; font-size: 1.5rem;
+    }
+    .brand-symbol {
+      width: 36px; height: 36px; display: grid; place-items: center; border-radius: 11px;
+      color: var(--ot-ink); background: var(--ot-accent); font-size: 1.25rem; font-weight: 800;
+    }
+    .nav-link { color: rgba(255,255,255,.76) !important; font-size: .92rem; font-weight: 600; }
+    .nav-link:hover, .nav-link.active { color: var(--ot-accent) !important; }
+    .btn-gold {
+      color: var(--ot-ink); background: var(--ot-accent); border: 1px solid var(--ot-accent);
+      font-weight: 700; border-radius: 999px; padding: .8rem 1.2rem; transition: .2s ease;
+    }
+    .btn-gold:hover { background: #e8bd6a; border-color: #e8bd6a; color: var(--ot-ink); transform: translateY(-1px); }
+    .btn-outline-light { border-radius: 999px; padding: .78rem 1.2rem; font-weight: 600; }
+    .hero {
+      position: relative; overflow: hidden; min-height: 500px; display: flex; align-items: center;
+      color: white; background: #27251f;
+      background-image: linear-gradient(90deg, rgba(15,15,15,.88) 0%, rgba(15,15,15,.63) 48%, rgba(15,15,15,.12) 100%),
+        url("https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=2000&q=85");
+      background-position: center; background-size: cover;
+    }
+    .hero::after { content: ""; position: absolute; inset: auto 0 0; height: 100px; background: linear-gradient(transparent, rgba(0,0,0,.22)); pointer-events: none; }
+    .hero-content { position: relative; z-index: 1; max-width: 700px; padding-top: 4.5rem; padding-bottom: 5rem; }
+    .eyebrow { color: var(--ot-accent); text-transform: uppercase; letter-spacing: .18em; font-size: .75rem; font-weight: 700; }
+    .display-title { font-family: var(--ot-font-display); font-size: clamp(2.7rem, 5vw, 5rem); line-height: 1.06; letter-spacing: -.035em; }
+    .hero-copy { max-width: 550px; color: rgba(255,255,255,.78); font-size: 1.06rem; line-height: 1.8; }
+    .search-panel {
+      position: relative; z-index: 2; margin-top: -35px; background: white; border-radius: var(--ot-radius);
+      box-shadow: var(--ot-shadow); padding: 14px;
+    }
+    .search-input { border: 0; min-height: 52px; box-shadow: none !important; }
+    .search-input:focus { outline: none; }
+    .search-label { display: block; color: var(--ot-muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; font-weight: 700; margin: 0 0 2px 12px; }
+    .section-space { padding-top: 5.5rem; padding-bottom: 5.5rem; }
+    .section-kicker { color: var(--ot-accent-dark); font-size: .75rem; text-transform: uppercase; letter-spacing: .16em; font-weight: 700; }
+    .section-title { font-family: var(--ot-font-display); font-size: clamp(2rem, 3vw, 3.1rem); letter-spacing: -.025em; }
+    .section-intro { color: var(--ot-muted); max-width: 620px; line-height: 1.8; }
+    .filter-row { display: flex; flex-wrap: wrap; gap: 9px; }
+    .filter-btn {
+      border: 1px solid var(--ot-line); background: transparent; color: #56544f; padding: .62rem 1rem;
+      border-radius: 999px; font-size: .86rem; font-weight: 700; transition: .2s ease;
+    }
+    .filter-btn:hover, .filter-btn.active { background: var(--ot-ink); color: white; border-color: var(--ot-ink); }
+    .event-card {
+      border: 1px solid rgba(0,0,0,.045); background: white; border-radius: var(--ot-radius);
+      overflow: hidden; height: 100%; box-shadow: 0 4px 18px rgba(0,0,0,.025);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+    .event-card:hover { transform: translateY(-5px); box-shadow: var(--ot-shadow); }
+    .event-image-wrap { position: relative; height: 225px; overflow: hidden; background: #ddd; }
+    .event-image { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+    .event-card:hover .event-image { transform: scale(1.05); }
+    .event-tag {
+      position: absolute; left: 15px; top: 15px; background: rgba(255,255,255,.94);
+      color: var(--ot-ink); padding: .45rem .7rem; border-radius: 999px; font-size: .7rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .06em;
+    }
+    .event-body { padding: 1.25rem; }
+    .event-date { color: var(--ot-accent-dark); font-size: .76rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+    .event-name { font-size: 1.2rem; font-weight: 700; letter-spacing: -.025em; margin: .55rem 0 .45rem; }
+    .event-location { color: var(--ot-muted); font-size: .88rem; }
+    .event-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; border-top: 1px solid #f0eee8; margin-top: 1rem; padding-top: 1rem; }
+    .event-price { font-weight: 800; }
+    .text-link { font-weight: 800; font-size: .85rem; }
+    .text-link:hover { color: var(--ot-accent-dark); }
+    .feature-banner {
+      background: var(--ot-ink); color: white; border-radius: 26px; overflow: hidden; min-height: 360px;
+      display: flex; align-items: center; position: relative;
+    }
+    .feature-banner::before {
+      content: ""; position: absolute; inset: 0 0 0 42%;
+      background: linear-gradient(90deg, var(--ot-ink), rgba(23,23,23,.18)),
+        url("https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=1200&q=80") center/cover;
+      opacity: .88;
+    }
+    .feature-copy { position: relative; z-index: 1; max-width: 570px; padding: 3.5rem; }
+    .feature-copy h3 { font-family: var(--ot-font-display); font-size: clamp(2rem, 3vw, 3.3rem); }
+    .trust-strip { background: #efede6; border-top: 1px solid var(--ot-line); border-bottom: 1px solid var(--ot-line); }
+    .trust-item { display: flex; align-items: center; gap: 12px; padding: 1.25rem 0; }
+    .trust-icon { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: white; font-size: 1.25rem; }
+    .trust-item strong { display: block; font-size: .93rem; }
+    .trust-item small { color: var(--ot-muted); }
+    .site-footer { background: var(--ot-ink); color: white; padding: 4rem 0 1.5rem; }
+    .footer-copy, .footer-link { color: rgba(255,255,255,.62); font-size: .9rem; line-height: 1.8; }
+    .footer-link:hover { color: var(--ot-accent); }
+    .footer-heading { font-size: .8rem; text-transform: uppercase; letter-spacing: .12em; color: var(--ot-accent); font-weight: 800; margin-bottom: 1rem; }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,.12); margin-top: 3rem; padding-top: 1.25rem; color: rgba(255,255,255,.45); font-size: .8rem; }
+    .page-view { display: none; min-height: 60vh; }
+    .page-view.active { display: block; }
+    .page-hero { background: var(--ot-ink); color: white; padding: 4.5rem 0; }
+    .breadcrumbs { color: var(--ot-muted); font-size: .85rem; margin-bottom: 1rem; }
+    .breadcrumbs a:hover { color: var(--ot-accent-dark); }
+    .content-panel { background: white; border: 1px solid var(--ot-line); border-radius: var(--ot-radius); padding: clamp(1.3rem, 3vw, 2.4rem); }
+    .faq-item { border-bottom: 1px solid var(--ot-line); padding: 1.2rem 0; }
+    .faq-item:last-child { border-bottom: 0; }
+    .faq-question { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1rem; background: none; border: 0; padding: 0; text-align: left; font-weight: 700; font-size: 1.03rem; }
+    .faq-question span:last-child { color: var(--ot-accent-dark); font-size: 1.4rem; }
+    .faq-answer { display: none; color: var(--ot-muted); line-height: 1.8; padding: 1rem 2rem 0 0; }
+    .faq-item.open .faq-answer { display: block; }
+    .detail-image { width: 100%; max-height: 450px; object-fit: cover; border-radius: var(--ot-radius); }
+    .detail-price-box { background: white; border: 1px solid var(--ot-line); border-radius: var(--ot-radius); padding: 1.5rem; position: sticky; top: 100px; }
+    .detail-meta { display: flex; gap: 12px; align-items: flex-start; margin: 1rem 0; color: #57564f; }
+    .detail-meta .meta-icon { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: #f2efe7; flex: 0 0 38px; }
+    .empty-state { display: none; text-align: center; padding: 3rem 1rem; color: var(--ot-muted); }
+    .notice { font-size: .8rem; color: var(--ot-muted); }
+    .toast-message { position: fixed; z-index: 2000; right: 18px; bottom: 18px; background: var(--ot-ink); color: white; padding: 1rem 1.25rem; border-radius: 14px; box-shadow: var(--ot-shadow); display: none; max-width: 320px; }
+    .toast-message.show { display: block; animation: toast-in .25s ease; }
+    @keyframes toast-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 991.98px) {
+      .navbar { min-height: 72px; }
+      .navbar-collapse { background: var(--ot-ink); padding: .8rem 0 1.2rem; }
+      .hero { min-height: 460px; background-position: 62% center; }
+      .feature-banner::before { inset-left: 15%; opacity: .55; }
+      .feature-copy { padding: 2.2rem; }
+      .detail-price-box { position: static; }
+    }
+    @media (max-width: 575.98px) {
+      .hero { min-height: 500px; }
+      .hero-content { padding-top: 3.5rem; padding-bottom: 4rem; }
+      .display-title { font-size: 2.75rem; }
+      .search-panel { margin-top: -22px; padding: 10px; }
+      .section-space { padding-top: 3.7rem; padding-bottom: 3.7rem; }
+      .event-image-wrap { height: 205px; }
+      .feature-copy { padding: 1.5rem; }
+      .feature-banner::before { inset: 0; }
+      .brand-mark { font-size: 1.3rem; }
+      .brand-symbol { width: 32px; height: 32px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header" id="siteHeader">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container">
+        <a class="brand-mark" href="#home" aria-label="OpenTickets homepage" data-view-link="home">
+          <span class="brand-symbol" aria-hidden="true">O</span><span>OpenTickets<span style="color:var(--ot-accent)">.</span></span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNav">
+          <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3 mt-3 mt-lg-0">
+            <li class="nav-item"><a class="nav-link active" href="#home" data-view-link="home">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="#events" data-view-link="events">Find Events</a></li>
+            <li class="nav-item"><a class="nav-link" href="#faqs" data-view-link="faqs">FAQs</a></li>
+            <li class="nav-item ms-lg-2"><a class="btn btn-gold btn-sm px-4 py-2" href="#events" data-view-link="events">Explore events <span aria-hidden="true">↗</span></a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- HOME VIEW -->
+    <section class="page-view active" id="view-home" data-view="home">
+      <section class="hero">
+        <div class="container">
+          <div class="hero-content">
+            <p class="eyebrow mb-3">Make room for memories</p>
+            <h1 class="display-title mb-4">Your next great<br>experience starts here.</h1>
+            <p class="hero-copy mb-4">From live music and theatre to the moments you’ll talk about for years, discover events worth getting excited about.</p>
+            <div class="d-flex flex-wrap gap-3">
+              <a class="btn btn-gold" href="#events" data-view-link="events">Discover events <span aria-hidden="true">→</span></a>
+              <a class="btn btn-outline-light" href="#faqs" data-view-link="faqs">How it works</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="container">
+        <form class="search-panel" id="homeSearchForm" role="search">
+          <div class="row align-items-center g-2">
+            <div class="col-lg-5">
+              <label class="search-label" for="homeSearch">What are you looking for?</label>
+              <input class="form-control search-input" id="homeSearch" type="search" placeholder="Search events, artists or venues">
+            </div>
+            <div class="col-lg-4">
+              <label class="search-label" for="homeCategory">Explore by category</label>
+              <select class="form-select search-input" id="homeCategory" aria-label="Choose event category">
+                <option value="all">All event types</option>
+                <option value="music">Music & concerts</option>
+                <option value="theatre">Theatre & comedy</option>
+                <option value="family">Family & lifestyle</option>
+              </select>
+            </div>
+            <div class="col-lg-3 d-grid"><button class="btn btn-gold" type="submit">Search events <span aria-hidden="true">→</span></button></div>
+          </div>
+        </form>
+      </div>
+
+      <section class="section-space pb-5" id="featuredEvents">
+        <div class="container">
+          <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3 mb-4">
+            <div>
+              <p class="section-kicker mb-2">The good stuff</p>
+              <h2 class="section-title mb-2">Featured events</h2>
+              <p class="section-intro mb-0">Hand-picked experiences to get your calendar looking a little more exciting.</p>
+            </div>
+            <a class="text-link" href="#events" data-view-link="events">View all events <span aria-hidden="true">→</span></a>
+          </div>
+          <div class="filter-row mb-4" id="homeFilters" aria-label="Filter featured events">
+            <button class="filter-btn active" type="button" data-filter="all" aria-pressed="true">All events</button>
+            <button class="filter-btn" type="button" data-filter="music" aria-pressed="false">Music</button>
+            <button class="filter-btn" type="button" data-filter="theatre" aria-pressed="false">Theatre & comedy</button>
+            <button class="filter-btn" type="button" data-filter="family" aria-pressed="false">Family & lifestyle</button>
+          </div>
+          <div class="row g-4" id="homeEventGrid"></div>
+          <div class="empty-state" id="homeEmpty">No events match those filters. Try another category or search term.</div>
+        </div>
+      </section>
+
+      <section class="container pb-5">
+        <div class="feature-banner">
+          <div class="feature-copy">
+            <p class="eyebrow mb-3">A little something special</p>
+            <h3 class="mb-3">Live in the moment.<br>Remember it forever.</h3>
+            <p class="text-white-50 mb-4">Find the show, the crowd and the feeling you’ll want to relive.</p>
+            <a class="btn btn-gold" href="#events" data-view-link="events">Find your next event <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="trust-strip">
+        <div class="container">
+          <div class="row g-3">
+            <div class="col-md-4"><div class="trust-item"><span class="trust-icon" aria-hidden="true">✦</span><div><strong>Experiences worth sharing</strong><small>Find something for every kind of fan.</small></div></div></div>
+            <div class="col-md-4"><div class="trust-item"><span class="trust-icon" aria-hidden="true">⌁</span><div><strong>Simple discovery</strong><small>Browse events without the fuss.</small></div></div></div>
+            <div class="col-md-4"><div class="trust-item"><span class="trust-icon" aria-hidden="true">♡</span><div><strong>Make it a memory</strong><small>Plan your next night out.</small></div></div></div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- SEARCH RESULTS / EVENTS VIEW -->
+    <section class="page-view" id="view-events" data-view="events">
+      <div class="page-hero">
+        <div class="container">
+          <p class="eyebrow mb-3">Find your next experience</p>
+          <h1 class="display-title mb-3">All events</h1>
+          <p class="hero-copy mb-0">Explore the listings and find something you’ll love.</p>
+        </div>
+      </div>
+      <section class="section-space">
+        <div class="container">
+          <form class="content-panel mb-4" id="resultsSearchForm">
+            <div class="row align-items-end g-3">
+              <div class="col-lg-6">
+                <label class="form-label fw-bold" for="resultsSearch">Search events</label>
+                <input class="form-control form-control-lg" id="resultsSearch" type="search" placeholder="Event, artist, venue…">
+              </div>
+              <div class="col-lg-3">
+                <label class="form-label fw-bold" for="resultsCategory">Category</label>
+                <select class="form-select form-select-lg" id="resultsCategory">
+                  <option value="all">All categories</option>
+                  <option value="music">Music & concerts</option>
+                  <option value="theatre">Theatre & comedy</option>
+                  <option value="family">Family & lifestyle</option>
+                </select>
+              </div>
+              <div class="col-lg-3 d-grid"><button class="btn btn-dark btn-lg rounded-pill" type="submit">Search</button></div>
+            </div>
+          </form>
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <p class="mb-0 text-secondary" id="resultsCount" aria-live="polite">Showing all events</p>
+            <button class="btn btn-link text-dark fw-bold text-decoration-none" id="clearSearch" type="button">Clear filters</button>
+          </div>
+          <div class="row g-4" id="resultsEventGrid"></div>
+          <div class="empty-state" id="resultsEmpty">No events found. Try a different search or category.</div>
+          <p class="notice mt-4">Demo content for layout preview. Replace sample event details and images with approved OpenTickets content before launch.</p>
+        </div>
+      </section>
+    </section>
+
+    <!-- FAQ VIEW -->
+    <section class="page-view" id="view-faqs" data-view="faqs">
+      <div class="page-hero">
+        <div class="container">
+          <p class="eyebrow mb-3">Need a hand?</p>
+          <h1 class="display-title mb-3">Frequently asked questions</h1>
+          <p class="hero-copy mb-0">A few helpful answers to make planning your next event easier.</p>
+        </div>
+      </div>
+      <section class="section-space">
+        <div class="container">
+          <div class="row g-5">
+            <div class="col-lg-4">
+              <p class="section-kicker mb-2">Here to help</p>
+              <h2 class="section-title mb-3">Good to know.</h2>
+              <p class="section-intro">Can’t find the answer you’re looking for? Reach out to the event organiser or the support team listed on your booking confirmation.</p>
+              <a class="btn btn-gold mt-2" href="mailto:hello@opentickets.co.za">Contact support <span aria-hidden="true">→</span></a>
+            </div>
+            <div class="col-lg-8">
+              <div class="content-panel" id="faqList">
+                <div class="faq-item open">
+                  <button class="faq-question" type="button" aria-expanded="true"><span>How do I find an event?</span><span aria-hidden="true">−</span></button>
+                  <div class="faq-answer">Browse the featured events on the homepage or open Find Events to search by event name, artist, venue or category.</div>
+                </div>
+                <div class="faq-item">
+                  <button class="faq-question" type="button" aria-expanded="false"><span>Where can I find event dates and venue details?</span><span aria-hidden="true">+</span></button>
+                  <div class="faq-answer">Open an event card to see its date, venue, location and the available ticket information. Always check the event details before making plans.</div>
+                </div>
+                <div class="faq-item">
+                  <button class="faq-question" type="button" aria-expanded="false"><span>How do I purchase tickets?</span><span aria-hidden="true">+</span></button>
+                  <div class="faq-answer">Use the ticket or booking link provided on the relevant event page. This demo uses sample interactions, so checkout is not connected.</div>
+                </div>
+                <div class="faq-item">
+                  <button class="faq-question" type="button" aria-expanded="false"><span>Can an event be cancelled or rescheduled?</span><span aria-hidden="true">+</span></button>
+                  <div class="faq-answer">Event changes are managed by the event organiser. Check the organiser’s latest updates and the terms attached to your booking.</div>
+                </div>
+                <div class="faq-item">
+                  <button class="faq-question" type="button" aria-expanded="false"><span>What should I do if I need help with a booking?</span><span aria-hidden="true">+</span></button>
+                  <div class="faq-answer">Keep your booking confirmation handy and contact the support channel or organiser shown in your confirmation email.</div>
+                </div>
+                <div class="faq-item">
+                  <button class="faq-question" type="button" aria-expanded="false"><span>Are the events shown here real listings?</span><span aria-hidden="true">+</span></button>
+                  <div class="faq-answer">The listings in this downloadable prototype are sample content created to demonstrate the design and interactions. Replace them with verified live listings before publishing.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- EVENT DETAIL VIEW -->
+    <section class="page-view" id="view-event-detail" data-view="event-detail">
+      <div class="page-hero">
+        <div class="container">
+          <div class="breadcrumbs text-white-50"><a href="#home" data-view-link="home">Home</a> / <a href="#events" data-view-link="events">Events</a> / <span id="detailBreadcrumb">Event details</span></div>
+          <p class="eyebrow mb-3" id="detailCategory">Featured event</p>
+          <h1 class="display-title mb-3" id="detailTitle">Event title</h1>
+          <p class="hero-copy mb-0" id="detailSubtitle">An experience to remember.</p>
+        </div>
+      </div>
+      <section class="section-space">
+        <div class="container">
+          <div class="row g-4 g-lg-5">
+            <div class="col-lg-8">
+              <img class="detail-image mb-4" id="detailImage" src="" alt="Event">
+              <div class="content-panel mb-4">
+                <p class="section-kicker mb-2">About this event</p>
+                <h2 class="section-title fs-2 mb-3">The experience</h2>
+                <p class="section-intro mb-0" id="detailDescription">Event description.</p>
+              </div>
+              <div class="content-panel">
+                <h2 class="section-title fs-3 mb-3">Before you go</h2>
+                <p class="text-secondary mb-0">Please confirm the event date, venue information, age restrictions and ticket conditions with the organiser before attending. This is a design prototype, not a live ticketing checkout.</p>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <aside class="detail-price-box">
+                <p class="section-kicker mb-2">Event information</p>
+                <div class="detail-meta"><span class="meta-icon" aria-hidden="true">▦</span><div><strong class="d-block">Date</strong><span id="detailDate" class="text-secondary small">To be confirmed</span></div></div>
+                <div class="detail-meta"><span class="meta-icon" aria-hidden="true">⌖</span><div><strong class="d-block">Venue</strong><span id="detailVenue" class="text-secondary small">Venue details</span></div></div>
+                <div class="detail-meta"><span class="meta-icon" aria-hidden="true">◎</span><div><strong class="d-block">Location</strong><span id="detailLocation" class="text-secondary small">South Africa</span></div></div>
+                <hr class="my-4">
+                <p class="text-secondary small mb-1">Tickets from</p>
+                <p class="display-6 fw-bold mb-3" id="detailPrice">R 250</p>
+                <button class="btn btn-gold w-100" id="bookDemoBtn" type="button">Get tickets <span aria-hidden="true">→</span></button>
+                <p class="notice mt-3 mb-0">Demo button only — no purchase will be made.</p>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-5">
+          <a class="brand-mark mb-3" href="#home" data-view-link="home"><span class="brand-symbol">O</span><span>OpenTickets<span style="color:var(--ot-accent)">.</span></span></a>
+          <p class="footer-copy mt-3" style="max-width:390px">Find your people, discover your next favourite event, and make memories that last long after the final encore.</p>
+        </div>
+        <div class="col-6 col-lg-2">
+          <p class="footer-heading">Explore</p>
+          <p><a class="footer-link" href="#home" data-view-link="home">Home</a></p>
+          <p><a class="footer-link" href="#events" data-view-link="events">Find events</a></p>
+          <p><a class="footer-link" href="#faqs" data-view-link="faqs">FAQs</a></p>
+        </div>
+        <div class="col-6 col-lg-2">
+          <p class="footer-heading">Helpful links</p>
+          <p><a class="footer-link" href="#faqs" data-view-link="faqs">Ticket help</a></p>
+          <p><a class="footer-link" href="#faqs" data-view-link="faqs">Event information</a></p>
+        </div>
+        <div class="col-lg-3">
+          <p class="footer-heading">Stay in the loop</p>
+          <p class="footer-copy">The best nights start with a little inspiration.</p>
+          <a class="btn btn-outline-light btn-sm mt-1" href="mailto:hello@opentickets.co.za">Get in touch</a>
+        </div>
+      </div>
+      <div class="footer-bottom d-flex flex-column flex-md-row justify-content-between gap-2">
+        <span>© <span id="currentYear"></span> OpenTickets. All rights reserved.</span>
+        <span>Design prototype · Replace sample content before production.</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast-message" id="toastMessage" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    /*
+      OpenTickets single-file prototype
+      - Edit event content in the EVENTS array.
+      - Update colors and typography in :root above.
+      - Replace sample images with approved client assets.
+      - Search, category filtering, FAQ accordion and page navigation are demo interactions.
+      - Connect the ticket button and verified event data to the real backend before launch.
+    */
+    const EVENTS = [
+      {
+        id: "appel-soos-net-hy-kan",
+        title: "Appel – soos net hy kan",
+        category: "theatre",
+        categoryLabel: "Comedy & theatre",
+        date: "Sat, 14 November 2026",
+        shortDate: "14 NOV 2026",
+        venue: "Artscape Theatre Centre",
+        location: "Cape Town, South Africa",
+        price: "R 280",
+        image: "https://images.unsplash.com/photo-1503095396549-807759245b35?auto=format&fit=crop&w=1000&q=85",
+        subtitle: "A one-of-a-kind night of South African humour and storytelling.",
+        description: "Join an unforgettable live performance filled with character, humour and moments made for sharing. This sample event page demonstrates the layout for event information, venue details and a ticket call to action. Replace this description with the official event copy before publishing."
+      },
+      {
+        id: "summer-sound-live",
+        title: "Summer Sound Live",
+        category: "music",
+        categoryLabel: "Music & concerts",
+        date: "Sat, 21 November 2026",
+        shortDate: "21 NOV 2026",
+        venue: "GrandWest Arena",
+        location: "Cape Town, South Africa",
+        price: "R 350",
+        image: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1000&q=85",
+        subtitle: "Big sounds, bright lights and a crowd singing together.",
+        description: "Get ready for an energetic live music experience with an electric atmosphere. Event details, performer information and ticket pricing shown here are illustrative placeholders and should be replaced with verified listing information."
+      },
+      {
+        id: "the-midnight-session",
+        title: "The Midnight Session",
+        category: "music",
+        categoryLabel: "Music & concerts",
+        date: "Fri, 27 November 2026",
+        shortDate: "27 NOV 2026",
+        venue: "The Music Kitchen",
+        location: "Port Elizabeth, South Africa",
+        price: "R 220",
+        image: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1000&q=85",
+        subtitle: "An intimate live set for music lovers.",
+        description: "A sample event description for a night of live music in an intimate venue. Add the confirmed running order, doors-open time, venue policies and official ticket details before this page is used publicly."
+      },
+      {
+        id: "laugh-out-loud",
+        title: "Laugh Out Loud",
+        category: "theatre",
+        categoryLabel: "Comedy & theatre",
+        date: "Sun, 29 November 2026",
+        shortDate: "29 NOV 2026",
+        venue: "Theatre on the Bay",
+        location: "Cape Town, South Africa",
+        price: "R 190",
+        image: "https://images.unsplash.com/photo-1585699324551-f6c309eedeca?auto=format&fit=crop&w=1000&q=85",
+        subtitle: "A feel-good comedy night with plenty of surprises.",
+        description: "Settle in for an evening of comedy and live entertainment. This text is demonstration content, intended to show how the event detail page can accommodate the official description and audience information."
+      },
+      {
+        id: "family-discovery-day",
+        title: "Family Discovery Day",
+        category: "family",
+        categoryLabel: "Family & lifestyle",
+        date: "Sat, 5 December 2026",
+        shortDate: "05 DEC 2026",
+        venue: "Botanical Garden",
+        location: "Johannesburg, South Africa",
+        price: "R 120",
+        image: "https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?auto=format&fit=crop&w=1000&q=85",
+        subtitle: "A relaxed day out for curious minds of every age.",
+        description: "A sample family-friendly listing with space for activities, entry information, accessibility details and other important visitor guidance. Replace all details with confirmed event information before launch."
+      },
+      {
+        id: "creative-living-market",
+        title: "Creative Living Market",
+        category: "family",
+        categoryLabel: "Family & lifestyle",
+        date: "Sun, 6 December 2026",
+        shortDate: "06 DEC 2026",
+        venue: "The Old Biscuit Mill",
+        location: "Cape Town, South Africa",
+        price: "Free entry",
+        image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=1000&q=85",
+        subtitle: "Meet makers, browse local finds and spend the day exploring.",
+        description: "Discover a sample creative market listing designed to hold event highlights, opening hours, venue details and visitor notes. Confirm the event schedule and admission details with the organiser."
+      }
+    ];
+
+    const state = { category: "all", query: "", resultsCategory: "all", resultsQuery: "" };
+    const $ = (selector, root = document) => root.querySelector(selector);
+    const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      })[char]);
+    }
+
+    function eventCard(event) {
+      return `
+        <div class="col-sm-6 col-xl-4 event-item" data-category="${escapeHTML(event.category)}">
+          <article class="event-card">
+            <a href="#event/${encodeURIComponent(event.id)}" data-event-id="${escapeHTML(event.id)}" aria-label="View ${escapeHTML(event.title)}">
+              <div class="event-image-wrap">
+                <img class="event-image" src="${escapeHTML(event.image)}" alt="${escapeHTML(event.title)}" loading="lazy">
+                <span class="event-tag">${escapeHTML(event.categoryLabel)}</span>
+              </div>
+            </a>
+            <div class="event-body">
+              <div class="event-date">${escapeHTML(event.shortDate)}</div>
+              <h3 class="event-name"><a href="#event/${encodeURIComponent(event.id)}" data-event-id="${escapeHTML(event.id)}">${escapeHTML(event.title)}</a></h3>
+              <p class="event-location mb-0"><span aria-hidden="true">⌖</span> ${escapeHTML(event.venue)}</p>
+              <div class="event-foot">
+                <span class="event-price">${escapeHTML(event.price)}</span>
+                <a class="text-link" href="#event/${encodeURIComponent(event.id)}" data-event-id="${escapeHTML(event.id)}">View event <span aria-hidden="true">→</span></a>
+              </div>
+            </div>
+          </article>
+        </div>`;
+    }
+
+    function matchesEvent(event, category, query) {
+      const text = `${event.title} ${event.categoryLabel} ${event.venue} ${event.location} ${event.subtitle}`.toLowerCase();
+      return (category === "all" || event.category === category) && (!query || text.includes(query.toLowerCase().trim()));
+    }
+
+    function renderHomeEvents() {
+      const visible = EVENTS.filter(event => matchesEvent(event, state.category, state.query));
+      $("#homeEventGrid").innerHTML = visible.map(eventCard).join("");
+      $("#homeEmpty").style.display = visible.length ? "none" : "block";
+      $$("#homeFilters .filter-btn").forEach(button => {
+        const active = button.dataset.filter === state.category;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+    }
+
+    function renderResults() {
+      const visible = EVENTS.filter(event => matchesEvent(event, state.resultsCategory, state.resultsQuery));
+      $("#resultsEventGrid").innerHTML = visible.map(eventCard).join("");
+      $("#resultsEmpty").style.display = visible.length ? "none" : "block";
+      $("#resultsCount").textContent = `Showing ${visible.length} of ${EVENTS.length} sample events`;
+    }
+
+    function showToast(message) {
+      const toast = $("#toastMessage");
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.clearTimeout(showToast.timeout);
+      showToast.timeout = window.setTimeout(() => toast.classList.remove("show"), 3200);
+    }
+
+    function showView(viewName) {
+      const view = viewName === "event-detail" ? "event-detail" : viewName;
+      $$(".page-view").forEach(section => section.classList.toggle("active", section.dataset.view === view));
+      $$(".nav-link[data-view-link]").forEach(link => link.classList.toggle("active", link.dataset.viewLink === view));
+      const nav = $("#mainNav");
+      if (nav.classList.contains("show") && window.bootstrap) bootstrap.Collapse.getOrCreateInstance(nav).hide();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function showEventDetail(eventId) {
+      const event = EVENTS.find(item => item.id === eventId);
+      if (!event) {
+        showToast("That event could not be found in this demo.");
+        location.hash = "events";
+        return;
+      }
+      $("#detailBreadcrumb").textContent = event.title;
+      $("#detailCategory").textContent = event.categoryLabel;
+      $("#detailTitle").textContent = event.title;
+      $("#detailSubtitle").textContent = event.subtitle;
+      $("#detailImage").src = event.image;
+      $("#detailImage").alt = event.title;
+      $("#detailDescription").textContent = event.description;
+      $("#detailDate").textContent = event.date;
+      $("#detailVenue").textContent = event.venue;
+      $("#detailLocation").textContent = event.location;
+      $("#detailPrice").textContent = event.price;
+      $("#bookDemoBtn").dataset.eventTitle = event.title;
+      showView("event-detail");
+    }
+
+    function routeFromHash() {
+      const hash = decodeURIComponent(location.hash.replace(/^#/, ""));
+      if (hash.startsWith("event/")) {
+        showEventDetail(hash.slice(6));
+        return;
+      }
+      const validViews = ["home", "events", "faqs"];
+      const view = validViews.includes(hash) ? hash : "home";
+      showView(view);
+    }
+
+    // Home category filtering — lightweight vanilla JS demo. Replace with the site's existing Isotope setup when integrating.
+    $("#homeFilters").addEventListener("click", event => {
+      const button = event.target.closest("[data-filter]");
+      if (!button) return;
+      state.category = button.dataset.filter;
+      renderHomeEvents();
+    });
+
+    $("#homeSearchForm").addEventListener("submit", event => {
+      event.preventDefault();
+      state.query = $("#homeSearch").value.trim();
+      state.category = $("#homeCategory").value;
+      renderHomeEvents();
+      location.hash = "events";
+      state.resultsQuery = state.query;
+      state.resultsCategory = state.category;
+      $("#resultsSearch").value = state.resultsQuery;
+      $("#resultsCategory").value = state.resultsCategory;
+      renderResults();
+    });
+
+    $("#resultsSearchForm").addEventListener("submit", event => {
+      event.preventDefault();
+      state.resultsQuery = $("#resultsSearch").value.trim();
+      state.resultsCategory = $("#resultsCategory").value;
+      renderResults();
+    });
+
+    $("#clearSearch").addEventListener("click", () => {
+      state.resultsQuery = "";
+      state.resultsCategory = "all";
+      $("#resultsSearch").value = "";
+      $("#resultsCategory").value = "all";
+      renderResults();
+    });
+
+    $("#faqList").addEventListener("click", event => {
+      const button = event.target.closest(".faq-question");
+      if (!button) return;
+      const item = button.closest(".faq-item");
+      const shouldOpen = !item.classList.contains("open");
+      $$(".faq-item", $("#faqList")).forEach(other => {
+        other.classList.remove("open");
+        const control = $(".faq-question", other);
+        control.setAttribute("aria-expanded", "false");
+        control.querySelector("span:last-child").textContent = "+";
+      });
+      if (shouldOpen) {
+        item.classList.add("open");
+        button.setAttribute("aria-expanded", "true");
+        button.querySelector("span:last-child").textContent = "−";
+      }
+    });
+
+    document.addEventListener("click", event => {
+      const eventLink = event.target.closest("[data-event-id]");
+      if (eventLink) {
+        event.preventDefault();
+        location.hash = `event/${encodeURIComponent(eventLink.dataset.eventId)}`;
+        return;
+      }
+      const viewLink = event.target.closest("[data-view-link]");
+      if (viewLink) {
+        event.preventDefault();
+        location.hash = viewLink.dataset.viewLink;
+      }
+    });
+
+    $("#bookDemoBtn").addEventListener("click", () => {
+      showToast(`Ticket checkout for “${$("#bookDemoBtn").dataset.eventTitle}” is not connected in this prototype.`);
+    });
+
+    window.addEventListener("hashchange", routeFromHash);
+    window.addEventListener("scroll", () => {
+      $("#siteHeader").classList.toggle("is-scrolled", window.scrollY > 12);
+    }, { passive: true });
+
+    $("#currentYear").textContent = new Date().getFullYear();
+    renderHomeEvents();
+    renderResults();
+    routeFromHash();
+  </script>
+</body>
+</html>
